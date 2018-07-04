@@ -199,7 +199,7 @@ switch(){
 
 ### 반복문: while문
 
-```
+```javascript
 while(/*조건식*/){
 	/*반복 실행될 코드*/
 }
@@ -207,3 +207,63 @@ while(/*조건식*/){
 
 * continue : 반복실행될 코드를 skip
 * break : 반복문에서 즉시 탈출
+
+### 반복문: do while문
+
+```javascript
+do{
+    /*반복 실행될 코드*/
+}while(/*조건식*/);
+```
+
+* 코드가 한번 실행되고, 반복 실행될지 결정
+  * while은 거짓일때 실행되지 않음
+  * do,while은 한번 실행되고, 거짓이면 종료
+
+### 반복문: for문
+
+```javascript
+var sum = 0;
+for( var i = 0 ; i < 5 ; i++){
+	sum = sum + i   
+}
+```
+
+* 초기구문, 업데이트 구문, 반복 조건을 한 구문에 합친 반복문
+
+### 반복문: for in문
+
+```javascript
+var obj = {
+    name: "object",
+    weight:30,
+    isObject: true,
+    arr:[1,2,3],
+    obj:{property:1}
+};
+for(var propertyName in obj){
+    console.log("\t", propertyName, ": ", obj[propertyName]);
+}
+```
+
+* 객체의 각 엘리먼트에 접근할 수 있는 반복문
+
+### 변수 : scope, shadowing
+
+* 변수의 scope : 선언한 변수의 유효 범위
+
+* 변수의 shadowing
+
+  * 함수 안에서 밖에 선언되었던 변수를 사용할때
+  * 함수 밖의 변수는 잠시 가려짐"shadowing"
+  * 함수 안에서만 값이 유지될 때 - var 로 선언하고 사용
+  * 여러 함수에서 값이 유지되면서 사용되는 변수 - 함수를 포괄하는 곳에서 선언하고 사용
+
+### method, this
+
+* method : 객체의 동작
+  * 메소드: 객체를 메소드로 실행 / 함수: 함수 자체가 '동작하는 함수객체'
+* this : 함수의 현재 실행 문맥, 메소드가 호출된 인스턴스
+  * [자바스크립트에서 사용되는 this에 대한 설명]('https://github.com/FEDevelopers/tech.description/wiki/%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EC%97%90%EC%84%9C-%EC%82%AC%EC%9A%A9%EB%90%98%EB%8A%94-this%EC%97%90-%EB%8C%80%ED%95%9C-%EC%84%A4%EB%AA%85-1')
+
+### closure
