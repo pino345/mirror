@@ -12,7 +12,7 @@
 - Unidirectional Dataflow
     - 데이터는 항상 일정한 장소에 있고, 그 장소에서만 변경할 수 있다.
     - 상태가 변했을 경우, 데이터는 그대로 있고, UI가 업데이트된다.
-    - 항상 같은 방향/단방향 데이터프름: 데이터->UI(o), UI->데이터(x)
+    - 항상 같은 방향/단방향 데이터흐름: 데이터->UI(o), UI->데이터(x)
 - mvc에서 리액트는 뷰
 
 
@@ -113,6 +113,127 @@ export default Movie
 
 
 ### Dataflow with Props
-- state / props
+- 리액트의 state / props
 - props를 통해서 부모/자식간 상속
-- 
+- 부모 컴포넌트가 자식 컴포넌트에 props를 통해 정보를 줄 수 있다
+    - app.js(부모)가 영화 타이틀, 영화 이미지에 대한 데이터를 다 가지고 있다
+    - movie.js(자식)에 movieTitles, movieImages를 props로 가져올 수 있다.
+- `{}` : JSX에서 명령을 실행시키려면 괄호 꼭 넣기!
+
+- App.js
+```
+import React, { Component } from 'react';
+// import logo from './logo.svg';
+import './App.css';
+import Movie from './Movie';
+
+const movieTitles = [
+  "Matrix", 
+  "Bohemian rhapsody", 
+  "Inception", 
+  "The great gatsby"
+]
+
+const movieImages = [
+  "https://images-na.ssl-images-amazon.com/images/I/51EG732BV3L.jpg",
+  "https://i.redd.it/lp0b1ev8exs11.jpg",
+  "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_UX182_CR0,0,182,268_AL_.jpg",
+  "https://upload.wikimedia.org/wikipedia/en/c/c2/TheGreatGatsby2013Poster.jpg"
+]
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <Movie title={movieTitles[0]} poster={movieImages[0]} />
+        <Movie title={movieTitles[1]} poster={movieImages[1]} />
+        <Movie title={movieTitles[2]} poster={movieImages[2]} />
+        <Movie title={movieTitles[3]} poster={movieImages[3]} />
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+- Movie.js
+```
+import React, {Component} from 'react';
+import './Movie.css';
+
+
+class Movie extends Component {
+    render(){
+        return(
+            <div>
+                <MoviePoster poster={this.props.poster} />
+                <h1>{this.props.title}</h1>
+            </div>
+        )
+    }
+}
+
+class MoviePoster extends Component {
+    render(){
+        return(
+            <img src={this.props.poster}></img>
+        )
+    }
+}
+export default Movie
+```
+
+
+
+### List with .map
+- 리스트 만들기
+    - API에서 많은 양의 영화정보를 불러올 때 `array`를 만들자
+- `map()`
+    -syntax
+    ```
+    const movies = [{title: "1", poster: "11"}, {title: "2", poster: "22"}];
+    const app = movies.map(movie => {movie.title}, {movie.poster});
+    ```
+```
+import React, { Component } from 'react';
+// import logo from './logo.svg';
+import './App.css';
+import Movie from './Movie';
+
+const movies = [
+  {
+    title: "Matrix",
+    poster: "https://images-na.ssl-images-amazon.com/images/I/51EG732BV3L.jpg"
+  },
+  {
+    title: "Bohemian rhapsody",
+    poster: "https://i.redd.it/lp0b1ev8exs11.jpg"
+  },
+  {
+    title: "Inception",
+    poster: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_UX182_CR0,0,182,268_AL_.jpg"
+  },
+  {
+    title: "The great gatsby",
+    poster: "https://upload.wikimedia.org/wikipedia/en/c/c2/TheGreatGatsby2013Poster.jpg"
+  }
+]
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        {movies.map(movie => {
+          return <Movie title={movie.title} poster={movie.poster} />
+        })}
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+
+
+### Validating Props with Prop Types
