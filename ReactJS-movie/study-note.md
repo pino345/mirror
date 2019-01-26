@@ -237,3 +237,79 @@ export default App;
 
 
 ### Validating Props with Prop Types
+.
+.
+.
+.
+
+
+
+
+
+
+
+
+### Ajax in React
+- Asynchronous('비동기적인') JavaScript and XM 
+- ajax를 쓰는 이유: 뭔가를 불러올 때마다 페이지 새로고침을 하고 싶지 않으니까!
+- 요즘은 XML은 잘 안쓰고, JSON을 주로 쓴다. (JSON: JavaScript Object Notation)
+- JSON: "속성-값" 쌍으로 이루어진 오브젝트를 javascript 문법으로 작성한 포맷
+
+```
+componentDidMount(){
+    console.log(fetch('https://yts.am/api/v2/list_movies.json?sort_by=rating'))
+  }
+```
+- [영화API](https://yts.am/api)
+    - `https://yts.am/api/v2/list_movies.json` + `?sort_by=rating` : 별점순으로 리스트 보기
+
+- `fetch` : Ajax를 React에 적용하는 간단한 방법!
+    - fetch request 만들기 (=fetch를 이용해서 url에서 뭔가를 get하는 방법)
+
+- 개발자도구-network에서 가져온 url을 확인할 수 있다.
+
+
+
+### Promises
+```
+componentDidMount(){
+    console.log(fetch('https://yts.am/api/v2/list_movies.json?sort_by=rating'))
+  }
+  console.log(fetch('anime_api')
+```
+- 영화 데이터를 다 불러와야 애니메이션 데이터를 읽기 시작한다.
+- promise는 asynchronous, 첫번째 라인이 끝나든 말든 두번째 라인을 작업한다.
+
+```
+componentDidMount(){
+    fetch('https://yts.am/api/v2/list_movies.json?sort_by=rating')
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch(err => console.log(err))
+  }
+```
+- promise 시나리오를 관리할 수 있다.
+1. fetch : url을 가져와라
+2. then : 위의 작업이 완료되면, ()를 해라
+3. catch : (에러가 있으면 '잡아서(catch)' 콘솔창에 보여줘)
+
+- fetch로 받은 response의 body를 ReadableStream(바이트로 이루어진 상태)에서 json 형식으로 바꿔주기
+
+
+
+### Async Await in React
+- 어플리케이션이 크면 then 안에 then이 이어지면서, callback hell에 빠진다
+  => 새로운 function을 만들자
+- `componentDidMount`의 사이즈를 키우기 보다는, 작은 function들을 각기 다른 장소에 두고 불러오는 것이 좋다.
+
+```
+_getMovies = async () => {
+    const movies = await this._callApi()
+    this.setState({
+      movies
+    })
+  }
+```
+- asynchronous function인 `_getMovies`는 movies라는 variable을 갖고있다.
+- value는 `_callApi`라는 function을 await 모드에서!
+- await는 `_callApi` 기능의 '성공적으로 수행'이 아니라 '끝나기'를 기다린다.
