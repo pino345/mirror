@@ -51,7 +51,7 @@ $ code .
     2. 무비 컴포넌트 (무비)
     3. 이미지 컴포넌트 (무비커버)
 
-- 실습 시작하기 
+- 실습 시작하기
 ```
 $ cd my-app
 $ code .
@@ -128,9 +128,9 @@ import './App.css';
 import Movie from './Movie';
 
 const movieTitles = [
-  "Matrix", 
-  "Bohemian rhapsody", 
-  "Inception", 
+  "Matrix",
+  "Bohemian rhapsody",
+  "Inception",
   "The great gatsby"
 ]
 
@@ -250,7 +250,7 @@ export default App;
 
 
 ### Ajax in React
-- Asynchronous('비동기적인') JavaScript and XM 
+- Asynchronous('비동기적인') JavaScript and XM
 - ajax를 쓰는 이유: 뭔가를 불러올 때마다 페이지 새로고침을 하고 싶지 않으니까!
 - 요즘은 XML은 잘 안쓰고, JSON을 주로 쓴다. (JSON: JavaScript Object Notation)
 - JSON: "속성-값" 쌍으로 이루어진 오브젝트를 javascript 문법으로 작성한 포맷
@@ -298,18 +298,77 @@ componentDidMount(){
 
 
 ### Async Await in React
-- 어플리케이션이 크면 then 안에 then이 이어지면서, callback hell에 빠진다
-  => 새로운 function을 만들자
+- 어플리케이션이 크면 then 안에 then이 이어지면서, 'callback hell!'에 빠진다 => 새로운 function을 만들자
 - `componentDidMount`의 사이즈를 키우기 보다는, 작은 function들을 각기 다른 장소에 두고 불러오는 것이 좋다.
 
 ```
-_getMovies = async () => {
-    const movies = await this._callApi()
-    this.setState({
-      movies
-    })
-  }
+componentDidMount(){
+  this._getMovies();
+}
 ```
+
 - asynchronous function인 `_getMovies`는 movies라는 variable을 갖고있다.
-- value는 `_callApi`라는 function을 await 모드에서!
-- await는 `_callApi` 기능의 '성공적으로 수행'이 아니라 '끝나기'를 기다린다.
+- movies의 value는 `_callApi`라는 function을 await 모드에서!
+- await는 `_callApi` 기능의 '성공적으로 수행'이 아니라 '끝나기'를 기다린다. `_callApi`의 return value를 movies에 set한다.
+- 이 컴포넌트의 setState를 movies(`_callApi`의 return value)로 한다.
+- setState는 `_callApi`작업이 완료되기 전까지 실행되지 않는다.
+```
+_getMovies = async () => {
+  const movies = await this._callApi()
+  this.setState({
+    movies
+  })
+}
+```
+
+- `_callApi`는 fetch라는 이름의 promise를 return한다.
+- 영화의 모든 데이터를 json 형식으로 return
+```
+_callApi = () => {
+  return fetch('https://yts.am/api/v2/list_movies.json?sort_by=rating')
+  .then(response => response.json())
+  .then(json => json.data.movies)
+  .catch(err => console.log(err))
+}
+```
+
+- state 안에 movies가 있으면 renderMovies라는 function을 불러오고, 아니면 'Loading'중을 띄운다.
+```
+render() {
+  return (
+    <div className="App">
+      {this.state.movies ? this._renderMovies() : 'Loading'}
+    </div>
+  );
+}
+```
+
+- 컴포넌트의 key를 인덱스에서 movie.id로 바꿔준다. 인덱스는 느리기 때문에 사용하지 않는 것이 좋다.
+```
+_renderMovies = () => {
+  const movies = this.state.movies.map(movie => {
+    return <Movie title={movie.title} poster={movie.large_cover_image} key={movie.id} />
+  })
+  return movies
+}
+```
+
+- await를 쓸때 async를 까먹지말자!
+
+
+
+### Updating Component
+- 컴포넌트를 업데이트하자!
+  1. 데이터 받기
+  2. css
+
+- console.log(movie)해서 우리가 필요한 데이터인 포스터, 제목, 장르, 평점, 설명 부분을 확인하고 수정한다.
+```
+_renderMovies = () => {
+  const movies = this.state.movies.map(movie => {
+    console.log(movie)
+    return <Movie title={movie.title} poster={movie.large_cover_image} key={movie.id} />
+  })
+  return movies
+}
+```
