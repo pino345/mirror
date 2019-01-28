@@ -362,13 +362,119 @@ _renderMovies = () => {
   1. 데이터 받기
   2. css
 
-- console.log(movie)해서 우리가 필요한 데이터인 포스터, 제목, 장르, 평점, 설명 부분을 확인하고 수정한다.
+- App.js) console.log(movie)해서 우리가 필요한 데이터인 포스터, 제목, 장르, 평점, 설명 부분을 확인하고 수정한다.
 ```
 _renderMovies = () => {
   const movies = this.state.movies.map(movie => {
     console.log(movie)
-    return <Movie title={movie.title} poster={movie.large_cover_image} key={movie.id} />
+    return <Movie
+      title={movie.title_english}
+      poster={movie.medium_cover_image}
+      key={movie.id}
+      genres={movie.genres}
+      synopsis={movie.synopsis}
+    />
   })
   return movies
 }
 ```
+
+- Movie.js) props를 추가
+```
+Movie.propTypes = {
+    title: PropTypes.string.isRequired,
+    poster:PropTypes.string.isRequired,
+    genres: PropTypes.array.isRequired,
+    synopsis: PropTypes.string.isRequired
+}
+```
+
+- html 작업, 클래스명추가, 장르 array 맵핑
+```
+function Movie({title, poster, genres, synopsis}){
+    return (
+        <div className="Movie">
+          <div className="Movie_columns">
+            <MoviePoster poster={poster} alt={title}/>
+          </div>
+          <div>
+            <h1>{title}</h1>
+            <div className="Movie_Genres">
+              {genres.map((genre, index) => <MovieGenre genre={genre} key={index} />)}
+            </div>
+            <p className="Movie_Synopsis">
+              {synopsis}
+            </p>
+          </div>
+        </div>
+    )
+}
+```
+
+- 장르를 맵핑할때 새로운 컴포넌트를 만들었다.
+- 모든 걸 컴포넌트로 쪼개고, 작게 만드는 것이 더 세련된 방법!
+```
+function MovieGenre({genre}){
+  return (
+    <span className="Movie_Genre">{genre}</span>
+  )
+}
+```
+
+
+
+### Giving some CSS to
+- state에 movie가 있으면 div의 className을 App으로, 없으면 App--loading으로 한다.
+```
+render() {
+  const { movies } = this.state;
+  return (
+    <div className={movies ? "App" : "App--loading"}>
+      {movies ? this._renderMovies() : 'Loading'}
+    </div>
+  );
+}
+```
+
+- `LinesEllipsis`라는 컴포넌트를 다운받는다
+```
+$ yarn add react react-lines-ellipsis
+```
+- 긴 텍스트를 받아서 원하는 최대라인값, 이 값을 넘었을때 어떻게 표현할지 설정한다.  
+```
+<div className="Movie_Synopsis">
+  <LinesEllipsis
+    text={synopsis}
+    maxLine='3'
+    ellipsis="..."
+    trimRight
+    basedOn='letters'
+  />
+</div>
+```
+
+
+
+### building for production
+- 프로젝트 시작하기
+```
+$ yarn start (=npm run start)
+```
+
+- css와 js를 압축한 파일을 build 폴더 안에 생성한다.
+- build 작업을 하면 압축, 최적화되어 속도를 향상시킨다.
+```
+$ yarn build
+```
+
+1. package.json 파일에 깃헙페이지 주소 추가하고,
+2. yarn build하기
+3. yarn add --dev gh-pages
+4. package.json 파일에 스크립트 추가
+5. yarn run deploy
+```
+$ yarn build
+$ yarn add --dev gh-pages
+```
+
+- 새로운 브런치가 생긴 것을 확인할 수 있다.
