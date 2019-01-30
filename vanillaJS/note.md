@@ -26,7 +26,7 @@
 - vanillaJS : Library가 없는 자바스크립트
 
 ### 1.4 VanillaJS
-- [vanillaJS]([http://vanilla-js.com](http://vanilla-js.com/))는 ‘패러디’사이트!
+- [vanillaJS](http://vanilla-js.com/)는 ‘패러디’사이트!
 - Speed comparison에서 vanillaJS와 다른 프로그램에서 실행하는 코드를 비교할 수 있다.
 
 ### 1.5 Hello World with Javascript
@@ -48,7 +48,7 @@ console.log('hello world')
 - 변수 Variables: 변경되거나 변경될 수 있는 것
 ```
 let a = 221;
-let b = a- 5;
+let b = a - 5;
 a = 4;
 console.log(b, a);
 ```
@@ -61,7 +61,7 @@ console.log(b, a);
 ### 1.7 let, const, var
 - const: 상수(constant), 변하지 않는 값
 ```
-let a = 221;
+const a = 221;
 let b = a- 5;
 a = 4;
 console.log(b, a);
@@ -69,11 +69,12 @@ console.log(b, a);
 - assignment to constant variable .....3:3
   - 상수 변수에 대입, 3번째 줄 3번째에 문제가 있다.
 
-- let
+- let: 변수 선언
 ```
 let a = 221;
 let b = a- 5;
-let a = 4;
+a = 4;        // a 값을 다시 설정할 수 있다.
+let a = 4;    // a를 다시 선언할 수 없다.
 console.log(b, a);
 ```
 - identifier 'a' has already been declared
@@ -104,6 +105,7 @@ const what = ???
 
 - 변수를 선언할 때, 기본은 const를 쓰자
 
+- 데이터 타입
 1. String
 - 텍스트
 ```
@@ -162,7 +164,7 @@ const nicoInfo = {
 nicoInfo.gender = "Female"
 
 console.log(nicoInfo.name);
-console.log(nicoInfo.favFood[0].name)
+console.log(nicoInfo.favFood[0].name);
 ```
 - nicoInfo 안의 값은 바꿀 수 있지만, nicoInfo 자체는 바꿀 수 없다.
 
@@ -174,7 +176,7 @@ console.log(nicoInfo.favFood[0].name)
   - `console`은 object, `log`라는 함수인 키가 있다.
   ```
   // 오브젝트 console이 가진 값을 확인할 수 있다.
-  console.log(console)
+  console.log(console);
   ```
 
 - function 함수이름 (argument) {}
@@ -185,7 +187,7 @@ function sayHello(potato, age){
 }
 
 sayHello("Nico", 15);
-console.log("hi!")
+console.log("hi!");
 ```
 
 ### 2.1.1 More Function Fun
@@ -204,9 +206,9 @@ function sayHello(name, age) {
 
 const greetNico = sayHello("Nico", 15)
 
-console.log(greetNico)
+console.log(greetNico);
 ```
--return
+- return
   - '돈을 내면 잔돈을 받는다' 같은 개념
 
 - math객체 만들기
@@ -236,5 +238,117 @@ const divide = calculator.divide(5, 5);
 const pow = calculator.pow(5, 5);
 
 const result = `plus = ${plus}, minus = ${minus}, multi = ${multiply}, div = ${divide}, pow = ${pow}`;
-console.log(result)
+console.log(result);
 ```
+
+### 2.2 JS DOM Functions
+- javascript에 있는 함수로 HTML 다루기
+```
+console.log(document);    // document에 접근
+
+const title = document.getElementById("title");
+console.log(title);        // 아이디가 title인 요소를 보여준다
+```
+
+- DOM : Document Object Model
+  - 자바스크립트는 html에 있는 모든 요소를 가지고 와서 객체로 바꾼다.
+  - 객체는 많은 키를 가진다 ex) console .log, .error, ...
+```
+const title = document.getElementById("title");
+title.innerHTML = "Hi! From JS";  
+// 자바스크립트로 선택한 것은 '객체'가 된다
+```
+
+### 2.3 Modifying the DOM with JS
+- HTML을 DOM 객체로 바꿀 수 있다.
+  - class 추가, 애니메이션 변경, click 감지 등등
+
+- title로 할 수 있는 것들 확인해보기
+```
+console.dir(title);
+
+title.style.color = "purple";
+
+document.title = 'I own you now'
+```
+
+- querySelector : 노드의 첫번째 자식 반환
+```
+const title = document.querySelector("#title");
+// document의 모든 자식들 중에 id(#) title인 요소
+```
+
+### 2.4 Events and event handlers
+- 자바스크립트는 이벤트에 반응하기 위해 만들어졌다!
+- 이벤트: click, resize, submit, input, change, load, before, closing, printing...등등
+
+- `.addEventListener("이벤트", 함수(listener))`
+```
+function handleResize() {
+  console.log("I have been resized")
+}
+
+window.addEventListener("resize", handleResize);
+// 윈도우 사이즈가 변경되면 함수 호출!
+// handleResize() 쓰면 지금 바로 호출하라는 뜻이다
+```
+
+- event: 이벤트를 다룰 함수를 만들 때마다 자바스크립트는 자동으로 함수를 객체에 붙인다.
+  - 이벤트가 발생할 때마다 이벤트 객체가 호출되는 것을 확인해보자!
+```
+function handleResize(event) {
+  console.log(event)
+}
+
+window.addEventListener("resize", handleResize(event));
+```
+
+- 클릭 이벤트
+```
+const title = document.querySelector("#title");
+
+function handleClick() {
+  title.style.color = "purple";
+}
+
+title.addEventListener("click", handleClick);
+```
+
+### 2.5 If, else, and, or
+- if/else, if/else if/else
+```
+if(condition){
+  block
+} else if {
+  block
+} else {
+  block
+}
+```
+
+- 다양한 연산자
+  - &&, ||,
+```
+if(20 > 5 && "nico" === "nico") {
+  console.log("yes");
+} else {
+  console.log("no");
+}
+```
+
+- 미성년자 검사하는 if/else문 만들기
+```
+const age = prompt("How old are you?");
+// prompt는 html로 섹시하게(?) 대체할 수 있기 때문에 이번 한번만 사용!
+
+if (age >= 18 && age <=21) {
+  console.log("you can drink but you should not");
+} else if(age > 21) {
+  console.log("go ahead");
+} else {
+  console.log("too young");
+}
+```
+
+### 2.6 DOM - if else - Function Practice
+-  
