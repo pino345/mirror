@@ -351,4 +351,70 @@ if (age >= 18 && age <=21) {
 ```
 
 ### 2.6 DOM - if else - Function Practice
--  
+- 문자열 '상수'는 대문자로 명명, 다른 변수와 차이를 둔다
+- 자바스크립트는 컬러코드를 받아서 rgb값으로 바꾼다. (오류주의!)
+```
+const BASE_COLOR = "rgb(52, 73, 94)";
+```
+
+- [MDN-JS Event reference](https://developer.mozilla.org/en-US/docs/Web/Events)  
+
+### 2.7 DOM - if else - Function Practice Two
+- 자바스크립트에서의 css를 가지고 작업하는 것은 좋지 않다.
+- 자바스크립트가 로직을 처리하게 만들자
+- `.className`으로 클래스를 바꾸면 기존의 class는 모두 지워진다.
+```
+function handleClick() {
+    const currentClass = title.className;
+    if(currentClass !== CLICKED_CLASS){
+        title.className = CLICKED_CLASS;
+    } else {
+        title.className = "";
+    }
+}
+```
+- `.classList`로 클래스 추가/제거, 존재유무 확인과 토글을 사용할 수 있다.
+```
+function handleClick() {
+    const hasClass = title.classList.contains(CLICKED_CLASS);
+    if(hasClass){
+        title.classList.remove(CLICKED_CLASS);
+    } else {
+        title.classList.add(CLICKED_CLASS);
+    }
+}
+```
+```
+function handleClick() {
+    title.classList.toggle(CLICKED_CLASS);
+}
+```
+
+## 3. Make your first JS App
+### 3.1 Making a JS Clock part One
+- 시간 함수
+```
+function getTime() {
+    const date = new Date();
+    const minutes = date.getMinutes();
+    const hours = date.getHours();
+    const seconds = date.getSeconds();
+    clockTitle.innerText = `${hours}:${minutes}:${seconds}`;
+}
+```
+
+### 3.2 Making a JS Clock part Two
+- `setInterval(fn, 1000)`
+```
+function init() {
+    getTime();
+    setInterval(getTime, 1000);
+}
+```
+- 삼항연산자 `조건식 ? 피연산자1 : 피연산자2`
+```
+clockTitle.innerText = `${hours < 10 ? `0${hours}` : hours}:${
+        minutes < 10 ? `${minutes}` : minutes}:${
+        seconds < 10 ? `0${seconds}` : seconds
+    }`;
+```

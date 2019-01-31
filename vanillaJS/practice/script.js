@@ -13,10 +13,22 @@ function handleClick() {
 }
 
 function init() {
-    title.style.color = BASE_COLOR;
-    title.addEventListener("click", handleClick);
+    title.style.color = "#34495e";
 } 
 
-init();
+title.addEventListener("click", handleClick);
+init();     // 초기값 설정
 
 
+// offline/onlone event
+
+function handleOffline() {
+    console.log("Bye Bye")
+}
+
+function handleOnline() {
+    console.log("Welcome back")
+}
+
+window.addEventListener("offline", handleOffline);
+window.addEventListener("online", handleOnline);
