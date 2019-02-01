@@ -418,3 +418,12 @@ clockTitle.innerText = `${hours < 10 ? `0${hours}` : hours}:${
         seconds < 10 ? `0${seconds}` : seconds
     }`;
 ```
+
+### Saving th User Name part One
+- `.querySelector` : css방식으로 클래스, 태그, 아이디 등 원하는 셀렉터를 가져온다
+- `.querySelectorAll` : 모든 것을 가져온다. array 안에 담김.
+- `.getElementByID`, `getElementsByTagName`
+- `local storage` : 작은 정보를 유저 컴퓨터에 저장하는 방법
+  - 개발자도구 - application - storage - localstorage
+  - 새로고침해도 남아있다.
+  - 저장된 값을 불러올 수 있다.
