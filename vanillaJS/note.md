@@ -419,7 +419,7 @@ clockTitle.innerText = `${hours < 10 ? `0${hours}` : hours}:${
     }`;
 ```
 
-### Saving th User Name part One
+### Saving the User Name part One
 - `.querySelector` : css방식으로 클래스, 태그, 아이디 등 원하는 셀렉터를 가져온다
 - `.querySelectorAll` : 모든 것을 가져온다. array 안에 담김.
 - `.getElementByID`, `getElementsByTagName`
@@ -427,3 +427,90 @@ clockTitle.innerText = `${hours < 10 ? `0${hours}` : hours}:${
   - 개발자도구 - application - storage - localstorage
   - 새로고침해도 남아있다.
   - 저장된 값을 불러올 수 있다.
+
+- 유저이름이 있는 경우 form class에서 SHOWING_CN을 제거하고, 사용자에게 'Hello ${유저이름}'을 보여주자 
+``` 
+const form = document.querySelector(".js-form"),
+    input = document.querySelector("input"),
+    greeting = document.querySelector(".js-greetings");
+
+const USER_LS = "currentUser",
+    SHOWING_CN = "showing";
+
+function paintGreeting(text) {
+    form.classList.remove(SHOWING_CN);
+    greeting.classList.add(SHOWING_CN);
+    greeting.innerText = `Hello ${text}`;
+}
+
+function loadName() {
+    const currentUser = localStorage.getItem(USER_LS);
+    if (currentUser === null) {
+        
+    } else {
+        paintGreeting(currentUser);
+    }
+}
+
+function init() {
+    loadName();
+}
+
+init();
+```
+
+### Saving the User Name part Two
+- 유저이름이 없는 경우 form class에 SHOWING_CN을 추가하자
+- `event.preventDefault` : 이벤트 취소
+  - 이벤트는 일종의 거품 같은 것!
+  - form을 제출하는 이벤트가 발생하면, document까지 올라가고, 프로그램되어진대로 다른 곳으로 가고, 새로고침된다.
+  - 이러한 이벤트의 흐름을 취소할 수 있다. 
+- 사용자가 submit했을 때, 입력값을 받아서 paintGreeting을 하고, 입력값을 localStorage에 저장한다. 
+```
+function saveName(text) {
+    localStorage.setItem(USER_LS, text);
+}
+
+function handleSubmit(event) {
+    event.preventDefault();
+    const currentValue = input.value;
+    paintGreeting(currentValue);
+    saveName(currentValue);
+}
+
+function askForName() {
+    form.classList.add(SHOWING_CN);
+    form.addEventListener("submit", handleSubmit);
+}
+```
+
+### Making a To Do List part One
+- html 문서에서 필요한 요소를 상수로 만들고, init() 함수 만들기
+```
+const toDoForm = document.querySelector(".js-toDoForm"),
+    toDoInput = form.querySeletor("input"),
+    toDoList = document.querySelector(".js-toDoList");
+
+function init() {
+    loadToDos();
+}
+
+init();
+```
+
+-  `.createElement`로  `<li id="1">list</li>`를 만들자
+```
+function paintToDo(text) {
+    const li = document.createElement("li");
+    const delBtn = document.createElement("button");
+    delBtn.innerText = "X";
+    const span = document.createElement("span");
+    span.innerText = text
+    li.appendChild(span);
+    li.appendChild(delBtn);
+    toDoList.appendChild(li);
+}
+```
+
+- `innerHTML` 과 `innerTEXT`의 차이
+  - 태그가 있는 경우 innerTEXT는 text가 그대로 들어가고, innerHTML은 태그를 인식한다.
