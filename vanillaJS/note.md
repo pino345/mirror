@@ -488,7 +488,7 @@ function askForName() {
 - html 문서에서 필요한 요소를 상수로 만들고, init() 함수 만들기
 ```
 const toDoForm = document.querySelector(".js-toDoForm"),
-    toDoInput = form.querySeletor("input"),
+    toDoInput = toDoForm.querySeletor("input"),
     toDoList = document.querySelector(".js-toDoList");
 
 function init() {
@@ -498,7 +498,19 @@ function init() {
 init();
 ```
 
--  `.createElement`로  `<li id="1">list</li>`를 만들자
+- `handleSubmit` : 이벤트를 취소하고, 사용자에게 받은 값을 `paintToDo`에 넘겨준다.
+```
+function handleSubmit(event) {
+    event.preventDefault();
+    const currentValue = toDoInput.value;
+    paintToDo(currentValue);
+    toDoInput.value = "";
+}
+```
+
+- `.createElement`로 `<li>`를 추가한다.
+- `.appendChild`로 <li></li> 안에 내용을 추가한다.
+- `toDoList`의 하위요소로 li를 추가한다.
 ```
 function paintToDo(text) {
     const li = document.createElement("li");
@@ -514,3 +526,158 @@ function paintToDo(text) {
 
 - `innerHTML` 과 `innerTEXT`의 차이
   - 태그가 있는 경우 innerTEXT는 text가 그대로 들어가고, innerHTML은 태그를 인식한다.
+
+- 로컬 스토리지에 리스트를 저장
+```
+function loadToDos() {
+    const loadedToDos = localStorage.getItem(TODOS_LS);
+    if(loadedToDos !== null) {
+    } 
+}
+```
+
+### Making a To Do List part Two
+- 할 일 목록을 `array`로 만들자
+  - 빈 배열을 만들고, 사용자 입력을 배열에 넣기
+```
+const toDos = [];
+
+function paintToDo(text) {
+    // ...
+    const toDoObj = {
+        text: text,
+        id: toDos.length + 1
+    };
+    toDos.push(toDoObj);
+}
+```
+
+- toDos를 로컬에 저장
+- `.setItem(keyName, keyValue);`
+```
+function saveToDos() {
+    localStorage.setItem(TODOS_LS, toDos);
+}
+```
+
+- local storage에는 자바스크립트의 데이터를 저장할 수 없다.
+- 모든 데이터를 string으로 저장하려고 한다.
+```
+key   |   value
+hello |   true
+
+> localStorage.getItem('hello')
+> "true"  // boolean이 아닌 string으로 나온다
+```
+
+- `JSON.stringify` : object가 string이 되도록 만든다
+```
+function saveToDos() {
+    localStorage.setItem(TODOS_LS, JSON.stringify(toDos));
+}
+```
+
+- loadedToDos가 null이 아니면 로컬스토리지에 저장된 목록을 보여주자!
+- `JSON.parse`를 이용하여 string데이터를 자바스크립트가 다룰 수 있도록 object로 바꿔주기
+```
+function loadToDos() {
+    const loadedToDos = localStorage.getItem(TODOS_LS);
+    if(loadedToDos !== null) {
+        console.log(loadedToDos);
+        const parsedToDos = JSON.parse(loadedToDos);
+        console.log(parsedToDos);
+    } 
+}
+```
+
+- `.forEach` : array에 담겨진 것을 각각 한번씩 함수에 실행
+```
+function loadToDos() {
+    const loadedToDos = localStorage.getItem(TODOS_LS);
+    if(loadedToDos !== null) {
+        const parsedToDos = JSON.parse(loadedToDos);
+        parsedToDos.forEach(function(toDo) {
+            paintToDo(toDo.text);
+        })
+    } 
+}
+```
+
+### Making a To Do List part Three
+- html과 local storage에  있는 `to do` 목록 지우고 저장하기
+- html의 li 지우기
+  1. click 이벤트
+  - delBtn을 클릭하면 deleteToDo 실행
+  ```
+  function deleteToDo(event) {
+  console.log(event)
+  }
+
+  function paintToDo(text) {
+      // ...
+
+      delBtn.addEventListener("click", deleteToDo);
+      
+      // ...
+  }
+  ```
+
+  2. `.target`으로 이벤트 요소 가져오기
+  ```
+  function deleteToDo(event) {
+  console.log(event.target)
+  }
+  ```
+
+  3. 버튼의 부모 li 찾기
+  - console.dir로 찾기
+  ```
+  function deleteToDo(event) {
+  console.log(event.target.parentNode)
+  }
+  ```
+
+  4. `removeChild` : delete child element
+  ```
+  function deleteToDo(event) {
+      const btn = event.target;
+      const li = btn.parentNode;
+      toDoList.removeChild(li);
+  }
+  ```
+
+- local strage에서 해당 데이터 지우기
+  1. `.filter`로 toDos array의 모든 아이템 중 조건에 맞는 아이템만 골라낸다
+  - `parseInt` : string을 숫자로
+  ```
+  function deleteToDo(event) {
+      // ...
+      const cleanToDos = toDos.filter(function(toDo){
+          // console.log(li.id, toDo.id);
+          return toDo.id != parseInt(li.id);
+      });
+  }
+  ```
+
+  2. toDos에 cleanToDos를 저장하고 savaToDos
+  - const는 값을 다시 설정할 수 없으므로 let으로 변경하기
+  ```
+  let toDos = [];
+
+  function deleteToDo(event) {
+    // ...
+    toDos = cleanToDos
+    saveToDos();
+  }
+  ```
+
+### 3.8 Image Background
+- `.random` 랜덤 숫자 생성
+- .ceil (올림) / .floor (버림)
+```
+function genRandom() {
+    const number =  Math.floor(Math.random() * IMG_NUMBER);
+    return number;
+}
+```
+
