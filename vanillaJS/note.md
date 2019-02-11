@@ -392,7 +392,8 @@ function handleClick() {
 
 ## 3. Make your first JS App
 ### 3.1 Making a JS Clock part One
-- 시간 함수
+- 시간 함수 `Date()`
+    - 날짜, 시간(년, 월, 일, 시, 분, 초, 밀리초) 메소드 제공하는 built-in 객체
 ```
 function getTime() {
     const date = new Date();
@@ -553,7 +554,7 @@ function paintToDo(text) {
 ```
 
 - toDos를 로컬에 저장
-- `.setItem(keyName, keyValue);`
+- `localStorage.setItem(keyName, keyValue);`
 ```
 function saveToDos() {
     localStorage.setItem(TODOS_LS, toDos);
