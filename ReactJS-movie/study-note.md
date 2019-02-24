@@ -237,15 +237,217 @@ export default App;
 
 
 ### Validating Props with Prop Types
-.
-.
-.
-.
+- array에 있는 각 차일드는 반드시 고유한 key prop를 가져야한다. key는 unique 해야한다!
+- `key={index}`를 통해서 고유값을 부여한다.
+```
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        {movies.map((movie, index) => {
+          return <Movie title={movie.title} poster={movie.poster} key={index} />
+        })}
+      </div>
+    );
+  }
+}
+```
+
+- props에 내가 원하는 값을 출력하고 싶다면 어떻게 할까? => static propTypes 작성
+    - `$ yarn add prop-types` 실행하고 내용 추가해야함!
+```
+import React, {Component} from 'react';
+import PropTypes from 'prop-types'; 
+import './Movie.css';
+
+
+class Movie extends Component {
+
+    static propTypes = {
+        title: PropTypes.string,
+        poster: PropTypes.string
+    }
+
+    render(){
+        return(
+            <div>
+                <MoviePoster poster={this.props.poster} />
+                <h1>{this.props.title}</h1>
+            </div>
+        )
+    }
+}
+
+class MoviePoster extends Component {
+    render(){
+        return(
+            <img src={this.props.poster}></img>
+        )
+    }
+}
+export default Movie
+```
+
+- `.string` / `.number` 등을 통해 요소를 검사할 수 있다.
+- `.isRequired`로 필수 요소를 지정할 수 있다.
 
 
 
+### Lifecycle Events on React
+- 컴포넌트는 여러 기능을 정해진 순서대로 실행한다.
+- **render**
+```
+componentWillMount() -> render() -> componentDidMount()
+```
+    - 사이클 시작, api에 작업 요청 -> 컴포넌트 인식 -> 컴포넌트가 자리잡음, 화면에 나타남, 데이터 작업
+
+- **update**
+```
+Update componentWillReceiveProps() => shouldComponentUpdate() => componentWillUpdate() => render() => componentDidUpdate()
+```
+    - 컴포넌트가 새로운 props를 받음
+    - old props와 새로운 props를 비교하여 다를 경우, update == true
+    - 업데이트를 하겠다 -> 렌더 -> 업데이트 완료
+
+- 컴포넌트는 많은 function을 가지고, 그들은 순서대로, 자동으로 작동한다.
 
 
+
+### Thinking in React: Component State
+- state: 리액트 컴포넌트 안에 있는 오브젝트
+    - 컴포넌트 안의 state가 바뀔 때마다, render가 발생
+- 직접적으로 state를 변경하면 render 설정이 작동하지 않는다. (`setTimeout`에 `state`를 직접 사용하면 에러)
+- state를 바꿀 때는 `setState`를 설정하고, 업데이트할 때마다 render가 새로운 state와 함께 작동할 것이다.
+```
+class App extends Component {
+
+  state = {
+    greeting: 'Hello!'
+  }
+
+  componentDidMount(){
+    setTimeout(() => {
+      this.setState({
+        greeting: 'Hello again!'
+      })
+    }, 5000)
+  }
+
+  render() {
+    return (
+      <div className="App">
+        {this.state.greeting}
+        {movies.map((movie, index) => {
+          return <Movie title={movie.title} poster={movie.poster} key={index} />
+        })}
+      </div>
+    );
+  }
+}
+```
+
+
+
+### Practicing this.setState()
+- 컴포넌트 외부에 있는 무비 리스트를 state 안으로 옮겨보기!
+- setTimeout: ~시간 후에 ~작업을 수행시킨다
+- `function()` 대신 `() => `로 작성해도 된다
+```
+componentDidMount(){
+    setTimeout(() => {
+      this.setState({
+        movies: [
+          ...this.state.movies,
+          {
+            title: "Spider man",
+            poster: "https://images-na.ssl-images-amazon.com/images/I/71HQ7lBgbGL._SY679_.jpg"
+          }
+        ]
+      })
+    }, 5000)
+  }
+```
+- `...this.state.movies`
+    - 이전 영화 리스트를 그대로 두고, 한 개의 영화를 추가
+    - 삭제하면 state 자체가 한 개의 영화로 바뀜
+    - 새로 추가하는 영화 다음에 적으면 추가하는 영화가 리스트의 첫번째로 나온다
+- state를 활용하여 infinity scroll 효과를 볼 수 있다. (=끝까지 스크롤하면 20개 영화를 추가한다)
+
+
+
+### Loading States
+- 데이터가 없을때 '로딩'을 띄우고, 있으면 영화정보가 보이도록 한다.
+    - 데이터없이 컴포넌트가 로딩, 데이터를 위해 API를 불러서 데이터를 받으면 컴포넌트의 state를 업데이트한다.
+- `_renderMovies`에서 `_`는 리액트 자체 기능이 많아서 리액트 자체 기능과 커스텀한 기능에 차이를 두기 위해 사용한다.
+```
+class App extends Component {
+
+  state = {
+    
+  }
+
+  componentDidMount(){
+    setTimeout(() => {
+      this.setState({
+        movies: [
+          {
+            title: "Matrix",
+            poster: "https://images-na.ssl-images-amazon.com/images/I/51EG732BV3L.jpg"
+          },
+          {
+            title: "Bohemian rhapsody",
+            poster: "https://i.redd.it/lp0b1ev8exs11.jpg"
+          },
+          {
+            title: "Inception",
+            poster: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_UX182_CR0,0,182,268_AL_.jpg"
+          },
+          {
+            title: "The great gatsby",
+            poster: "https://upload.wikimedia.org/wikipedia/en/c/c2/TheGreatGatsby2013Poster.jpg"
+          },
+          {
+            title: "Spider man",
+            poster: "https://images-na.ssl-images-amazon.com/images/I/71HQ7lBgbGL._SY679_.jpg"
+          }
+        ]
+      })
+    }, 5000)
+  }
+
+
+  _renderMovies = () => {
+    const movies = this.state.movies.map((movie, index) => {
+      return <Movie title={movie.title} poster={movie.poster} key={index} />
+    })
+    return movies
+  }
+
+  render() {
+    return (
+      <div className="App">
+        {this.state.movies ? this._renderMovies() : 'Loading'}
+      </div>
+    );
+  }
+}
+```
+
+
+
+### Smart vs Dumb Components
+- `smart` : state가 있는 컴포넌트 
+- `dumb` : state가 없는 stateless functional 컴포넌트, props 밖에 없다. 
+    - 어떤 컴포넌트는 그냥 return을 하기 위해 존재한다.
+    - 1개의 props와 1개의 html 태그만 있으면 된다.
+    - state, function render, 라이프사이클이 없다! return만 갖는다
+```
+function MoviePoster({poster}){
+    return (
+        <img src={poster} alt="Movie Poster" />
+    )
+}
+```
 
 
 
